@@ -23,7 +23,7 @@ func (controller *UrlController) GetLongUrl(c *gin.Context) {
 
 	longUrl, err := controller.AppContainer.UrlHandler.GetLongUrl(c.Request.Context(), shortUrlId)
 	if err != nil {
-		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error on getting url", err)
+		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error on getting url_manage", err)
 		return
 	}
 

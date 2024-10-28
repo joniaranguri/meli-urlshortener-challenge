@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/domain"
+	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/utils/constants"
 )
 

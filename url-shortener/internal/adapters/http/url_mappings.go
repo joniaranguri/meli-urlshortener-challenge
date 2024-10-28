@@ -7,6 +7,12 @@ import (
 )
 
 func defineRoutes(router gin.IRouter, appContainer registry.AppContainer) {
-	endpointController := controllers.UrlController{AppContainer: appContainer}
-	endpointController.RegisterRoutes(router)
+	// Shorten and retrieving endpoints
+	urlController := controllers.UrlController{AppContainer: appContainer}
+	urlController.RegisterRoutes(router)
+
+	// Update and enable/disable endpoints
+	urlManageController := controllers.UrlManageController{AppContainer: appContainer}
+	urlManageController.RegisterRoutes(router)
+
 }
