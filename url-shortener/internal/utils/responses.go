@@ -11,6 +11,7 @@ func GetResponse(message string) domain.BaseResponse {
 		ApiVersion: constants.ApiVersion,
 	}
 }
+
 func GetResponseWithData(message string, data any) domain.BaseResponseWithData[any] {
 	return domain.BaseResponseWithData[any]{
 		BaseResponse: GetResponse(message),
