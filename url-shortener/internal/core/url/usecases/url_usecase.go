@@ -2,12 +2,13 @@ package usecases
 
 import (
 	"context"
+	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/repository"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/domain"
-	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/repository"
 )
 
 type urlUseCase struct {
-	urlRepository repository.UrlRepository
+	urlMappingRepository repository.UrlMappingRepository
+	urlIdsRepository     repository.UrlIdsRepository
 }
 
 type UrlUseCase interface {
@@ -15,8 +16,9 @@ type UrlUseCase interface {
 	GetLongUrl(ctx context.Context, shortUrlId string) (string, error)
 }
 
-func NewUrlUseCase(repo repository.UrlRepository) UrlUseCase {
+func NewUrlUseCase(mappingRepository repository.UrlMappingRepository, idsRepository repository.UrlIdsRepository) UrlUseCase {
 	return &urlUseCase{
-		urlRepository: repo,
+		urlMappingRepository: mappingRepository,
+		urlIdsRepository:     idsRepository,
 	}
 }

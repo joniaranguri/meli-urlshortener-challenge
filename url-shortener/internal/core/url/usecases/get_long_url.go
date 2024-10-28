@@ -6,5 +6,5 @@ import (
 
 func (u *urlUseCase) GetLongUrl(ctx context.Context, shortUrlId string) (string, error) {
 	// TODO: Implement metrics logic
-	return u.urlRepository.GetLongUrl(ctx, shortUrlId)
+	return u.urlMappingRepository.GetLongUrl(ctx, shortUrlId)
 }
