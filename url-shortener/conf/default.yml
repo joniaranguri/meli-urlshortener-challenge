@@ -7,4 +7,4 @@ database:
 
 awsRegion: "us-east-1"
 
-redisHost: "localhost:6379"
+redisHost: "redis-instance:6379"
