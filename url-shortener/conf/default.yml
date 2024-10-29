@@ -6,3 +6,5 @@ database:
   dbName: "url_mapping_db"
 
 awsRegion: "us-east-1"
+
+redisHost: "redis-cache:6379"
