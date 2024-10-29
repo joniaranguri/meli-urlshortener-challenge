@@ -1,0 +1,4 @@
+build/*
+conf/local.yml
+.DS_Store
+.idea/
