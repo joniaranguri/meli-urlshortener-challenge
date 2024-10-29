@@ -11,7 +11,7 @@ func (u *urlUseCase) GetLongUrl(ctx context.Context, shortUrlId string) (string,
 		return "", err
 	}
 
-	go u.saveClickMetric(ctx, shortUrlId)
+	go u.saveClickMetric(context.Background(), shortUrlId)
 
 	return longUrl, nil
 }

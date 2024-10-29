@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS url_mapping (
     user_id VARCHAR(28) DEFAULT NULL,
     active TINYINT(1) NOT NULL DEFAULT 1);
 
+-- Differentiate from upper and lowercase ids
+ALTER TABLE url_mapping
+    MODIFY COLUMN short_url VARCHAR(7) COLLATE utf8mb4_bin NOT NULL;
+
 -- Create ids_index Table with unique current_id
 CREATE TABLE IF NOT EXISTS ids_index (
     current_id BIGINT NOT NULL UNIQUE

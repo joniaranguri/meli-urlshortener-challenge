@@ -12,7 +12,7 @@ type StatisticsController struct {
 }
 
 func (controller *StatisticsController) RegisterRoutes(router gin.IRouter) {
-	router.GET("/:shortUrlId", controller.GetClickStatistics)
+	router.GET("/stats/:shortUrlId", controller.GetClickStatistics)
 }
 
 func (controller *StatisticsController) GetClickStatistics(c *gin.Context) {

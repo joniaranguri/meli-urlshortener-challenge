@@ -40,7 +40,7 @@ func (controller *UrlController) PostShorten(c *gin.Context) {
 	response, err := controller.AppContainer.UrlHandler.ShortenUrl(c.Request.Context(), payload)
 
 	if err != nil {
-		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error on get ", err)
+		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error on shorten url ", err)
 		return
 	}
 	c.JSON(http.StatusOK, response)
