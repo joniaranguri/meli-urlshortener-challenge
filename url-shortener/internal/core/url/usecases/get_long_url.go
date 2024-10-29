@@ -6,8 +6,14 @@ import (
 )
 
 func (u *urlUseCase) GetLongUrl(ctx context.Context, shortUrlId string) (string, error) {
-	go u.saveClickMetric(context.Background(), shortUrlId)
-	return u.urlMappingRepository.GetLongUrl(ctx, shortUrlId)
+	longUrl, err := u.urlMappingRepository.GetLongUrl(ctx, shortUrlId)
+	if err != nil {
+		return "", err
+	}
+
+	go u.saveClickMetric(ctx, shortUrlId)
+
+	return longUrl, nil
 }
 
 func (u *urlUseCase) saveClickMetric(ctx context.Context, shortUrlId string) {

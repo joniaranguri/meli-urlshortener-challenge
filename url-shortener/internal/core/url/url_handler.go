@@ -2,6 +2,7 @@ package url
 
 import (
 	"context"
+	coreDomain "github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/domain"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/usecases"
 )
@@ -20,7 +21,14 @@ func NewUrlHandler(us usecases.UrlUseCase) Handler {
 }
 
 func (handler *urlHandler) ShortenUrl(ctx context.Context, request domain.ShortenUrlRequest) (domain.ShortenUrlResponse, error) {
-	return handler.userCases.ShortenUrl(ctx, request)
+	shortUrl, err := handler.userCases.ShortenUrl(ctx, coreDomain.UrlMapping{
+		LongUrl: request.LongUrl,
+		UserId:  request.UserId,
+		Active:  true,
+	})
+	return domain.ShortenUrlResponse{
+		ShortUrl: shortUrl,
+	}, err
 }
 
 func (handler *urlHandler) GetLongUrl(ctx context.Context, shortUrlId string) (string, error) {
