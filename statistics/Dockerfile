@@ -29,7 +29,7 @@ COPY --from=builder /app/statistics .
 COPY ./conf /root/conf
 
 # Expose the port the application will listen on (change if needed)
-EXPOSE 80
+EXPOSE 81
 
 # Command to run the application
 CMD ["./statistics"]
