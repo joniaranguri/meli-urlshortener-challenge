@@ -13,14 +13,16 @@ import (
 )
 
 type urlMappingRepository struct {
-	db    *gorm.DB
-	cache *redis.Client
+	db           *gorm.DB
+	cache        *redis.Client
+	statisticsDb *redis.Client
 }
 
 type UrlMappingRepository interface {
 	GetLongUrl(ctx context.Context, shortUrl string) (string, error)
 	SaveUrlMapping(ctx context.Context, urlMapping domain.UrlMapping) error
 	GetNewUniqueId(ctx context.Context) (string, error)
+	SaveClickCountMetrics(ctx context.Context, shortUrlId string) error
 }
 
 // GetLongUrl implements repository.UrlMappingRepository
@@ -90,6 +92,10 @@ func (ur *urlMappingRepository) GetNewUniqueId(ctx context.Context) (string, err
 	return urlMapping.ShortUrlId, nil
 }
 
+func (ur *urlMappingRepository) SaveClickCountMetrics(ctx context.Context, shortUrlId string) error {
+	return ur.statisticsDb.Incr(ctx, shortUrlId).Err()
+}
+
 func (ur *urlMappingRepository) getMappingFromCache(ctx context.Context, shortUrlId string) (mapping domain.UrlMapping, err error) {
 	value, err := ur.cache.Get(ctx, shortUrlId).Result()
 	if err == redis.Nil {
@@ -123,9 +129,10 @@ func (ur *urlMappingRepository) sendMappingToCache(ctx context.Context, mapping 
 }
 
 // NewUrlMappingRepository initializes a new UrlMappingRepository
-func NewUrlMappingRepository(db *gorm.DB, cache *redis.Client) UrlMappingRepository {
+func NewUrlMappingRepository(db *gorm.DB, cache *redis.Client, statisticsDb *redis.Client) UrlMappingRepository {
 	return &urlMappingRepository{
-		db:    db,
-		cache: cache,
+		db:           db,
+		cache:        cache,
+		statisticsDb: statisticsDb,
 	}
 }

@@ -2,34 +2,40 @@ package repository
 
 import (
 	"context"
+	"github.com/go-redis/redis/v8"
 	"github.com/joniaranguri/meli-urlshortener-challenge/statistics/internal/core/domain"
+	"strconv"
 )
 
 type statisticsRepository struct {
-	db any // TODO: Complete with corresponding database
+	metricsDb *redis.Client
 }
 
 type StatisticsRepository interface {
 	GetClickStatistics(ctx context.Context, shortUrl string) (domain.ClickStatistics, error)
-	SaveStatistics(ctx context.Context, shortUrlId string) error
 }
 
-// GetClickStatistics implements repository.StatisticsRepository
+// GetClickStatistics fetches the click count for a given shortUrl from Redis.
 func (ur *statisticsRepository) GetClickStatistics(ctx context.Context, shortUrl string) (domain.ClickStatistics, error) {
-	// TODO: Complete with corresponding implementation
-	return domain.ClickStatistics{
-		Clicks: uint64(8934853),
-	}, nil
+	// Fetch the click count from Redis
+	clicks, err := ur.metricsDb.Get(ctx, shortUrl).Result()
+	if err == redis.Nil {
+		return domain.ClickStatistics{Clicks: 0}, nil
+	} else if err != nil {
+		return domain.ClickStatistics{}, err
+	}
+
+	clickCount, err := strconv.ParseUint(clicks, 10, 64)
+	if err != nil {
+		return domain.ClickStatistics{}, err
+	}
+
+	return domain.ClickStatistics{Clicks: clickCount}, nil
 }
 
-// SaveStatistics implements repository.StatisticsRepository
-func (ur *statisticsRepository) SaveStatistics(ctx context.Context, shortUrlId string) error {
-	// TODO: Complete with corresponding implementation
-	return nil
-}
-
-func NewStatisticsRepository(db any) StatisticsRepository {
+// NewStatisticsRepository initializes a new StatisticsRepository with the provided Redis client.
+func NewStatisticsRepository(db *redis.Client) StatisticsRepository {
 	return &statisticsRepository{
-		db: db,
+		metricsDb: db,
 	}
 }

@@ -1,11 +1,8 @@
 package registry
 
 import (
-	"context"
 	"github.com/go-redis/redis/v8"
 )
-
-var ctx = context.Background()
 
 func (r *registry) NewStatisticsDbClient() (*redis.Client, error) {
 	redisStatisticsMockHost, err := r.conf.String("redisStatisticsMockHost")

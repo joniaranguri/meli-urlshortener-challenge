@@ -8,14 +8,14 @@ import (
 var ctx = context.Background()
 
 func (r *registry) NewUrlMappingCacheClient() (*redis.Client, error) {
-	redisHost, err := r.conf.String("redisHost")
+	redisMappingHost, err := r.conf.String("redisMappingHost")
 	if err != nil {
 		panic(err)
 	}
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     redisHost, // Connect to local Redis server
-		Password: "",        // No password set
-		DB:       0,         // Use default DB
+		Addr:     redisMappingHost, // Connect to local Redis server
+		Password: "",               // No password set
+		DB:       0,                // Use default DB
 	})
 
 	// Test the connection

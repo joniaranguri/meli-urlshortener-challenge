@@ -13,5 +13,11 @@ func (r *registry) NewUrlMappingRepository() repository.UrlMappingRepository {
 	if err != nil {
 		panic(err)
 	}
-	return repository.NewUrlMappingRepository(dbClient, cacheClient)
+
+	statisticsDbClient, err := r.NewStatisticsDbClient()
+
+	if err != nil {
+		panic(err)
+	}
+	return repository.NewUrlMappingRepository(dbClient, cacheClient, statisticsDbClient)
 }

@@ -7,4 +7,6 @@ database:
 
 awsRegion: "us-east-1"
 
-redisHost: "redis-cache:6379"
+redisMappingHost: "redis-cache:6379"
+
+redisStatisticsMockHost: "redis-stats-mock:6379"
