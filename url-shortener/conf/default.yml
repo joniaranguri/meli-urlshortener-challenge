@@ -9,4 +9,4 @@ awsRegion: "us-east-1"
 
 redisMappingHost: "redis-cache:6379"
 
-redisMetricsMockHost: "redis-metrics-mock:6380"
+redisStatisticsMockHost: "redis-stats-mock:6380"
