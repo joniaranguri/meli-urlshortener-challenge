@@ -7,15 +7,17 @@ import (
 )
 
 func (u *urlUseCase) ShortenUrl(ctx context.Context, shortenUrlRequest domain.ShortenUrlRequest) (res domain.ShortenUrlResponse, err error) {
-	shortUrlId, err := u.urlIdsRepository.GetNewUniqueId(ctx)
-	if err == nil {
+	shortUrlId, err := u.urlMappingRepository.GetNewUniqueId(ctx)
+	if err != nil {
 		return res, err
 	}
 	err = u.urlMappingRepository.SaveUrlMapping(ctx, coreDomain.UrlMapping{
 		ShortUrlId: shortUrlId,
 		LongUrl:    shortenUrlRequest.LongUrl,
+		UserId:     "user", // TODO: Complete with userId
+		Active:     true,
 	})
-	if err == nil {
+	if err != nil {
 		return res, err
 	}
 	res.ShortUrl = buildShortUrl(shortUrlId)
@@ -23,5 +25,5 @@ func (u *urlUseCase) ShortenUrl(ctx context.Context, shortenUrlRequest domain.Sh
 }
 
 func buildShortUrl(urlId string) string {
-	return "http://localhost/" + urlId
+	return "http://localhost:80/" + urlId
 }

@@ -8,7 +8,6 @@ import (
 
 type urlUseCase struct {
 	urlMappingRepository repository.UrlMappingRepository
-	urlIdsRepository     repository.UrlIdsRepository
 }
 
 type UrlUseCase interface {
@@ -16,9 +15,8 @@ type UrlUseCase interface {
 	GetLongUrl(ctx context.Context, shortUrlId string) (string, error)
 }
 
-func NewUrlUseCase(mappingRepository repository.UrlMappingRepository, idsRepository repository.UrlIdsRepository) UrlUseCase {
+func NewUrlUseCase(mappingRepository repository.UrlMappingRepository) UrlUseCase {
 	return &urlUseCase{
 		urlMappingRepository: mappingRepository,
-		urlIdsRepository:     idsRepository,
 	}
 }
