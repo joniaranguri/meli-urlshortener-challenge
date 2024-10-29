@@ -4,7 +4,6 @@ import (
 	"context"
 	coreDomain "github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/repository"
-	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url_manage/domain"
 )
 
 type urlManageUseCase struct {
@@ -12,8 +11,8 @@ type urlManageUseCase struct {
 }
 
 type UrlManageUseCase interface {
-	UpdateUrl(ctx context.Context, request domain.PatchUrlRequest) (domain.PatchUrlResponse, error)
-	ChangeUrlStatus(ctx context.Context, urlStatusInfo coreDomain.UrlStatusInfo) error
+	UpdateUrl(ctx context.Context, urlMapping coreDomain.UrlMapping) (string, error)
+	ChangeUrlStatus(ctx context.Context, urlStatusInfo coreDomain.UrlMapping) error
 }
 
 func NewUrlManageUseCase(repo repository.UrlMappingRepository) UrlManageUseCase {

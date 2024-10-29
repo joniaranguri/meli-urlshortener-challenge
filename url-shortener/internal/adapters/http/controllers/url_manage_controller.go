@@ -38,9 +38,16 @@ func (controller *UrlManageController) PatchUrl(c *gin.Context) {
 }
 
 func (controller *UrlManageController) PostEnable(c *gin.Context) {
+	payload := domain.UserRequest{}
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		utils.AbortWithStatusCode(c, http.StatusBadRequest, "error on bindJson", err)
+		return
+	}
+
 	shortUrlId := c.Param("shortUrlId")
 
-	err := controller.AppContainer.UrlManageHandler.EnableUrl(c.Request.Context(), shortUrlId)
+	err = controller.AppContainer.UrlManageHandler.EnableUrl(c.Request.Context(), shortUrlId, payload.UserId)
 
 	if err != nil {
 		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error enabling url", err)
@@ -50,9 +57,15 @@ func (controller *UrlManageController) PostEnable(c *gin.Context) {
 }
 
 func (controller *UrlManageController) PostDisable(c *gin.Context) {
+	payload := domain.UserRequest{}
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		utils.AbortWithStatusCode(c, http.StatusBadRequest, "error on bindJson", err)
+		return
+	}
 	shortUrlId := c.Param("shortUrlId")
 
-	err := controller.AppContainer.UrlManageHandler.DisableUrl(c.Request.Context(), shortUrlId)
+	err = controller.AppContainer.UrlManageHandler.DisableUrl(c.Request.Context(), shortUrlId, payload.UserId)
 
 	if err != nil {
 		utils.AbortWithStatusCode(c, http.StatusInternalServerError, "error disabling url", err)

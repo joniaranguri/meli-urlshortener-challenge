@@ -3,27 +3,23 @@ package usecases
 import (
 	"context"
 	coreDomain "github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
-	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/domain"
+	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/utils/constants"
 )
 
-func (u *urlUseCase) ShortenUrl(ctx context.Context, shortenUrlRequest domain.ShortenUrlRequest) (res domain.ShortenUrlResponse, err error) {
+func (u *urlUseCase) ShortenUrl(ctx context.Context, urlMapping coreDomain.UrlMapping) (string, error) {
 	shortUrlId, err := u.urlMappingRepository.GetNewUniqueId(ctx)
 	if err != nil {
-		return res, err
+		return "", err
 	}
-	err = u.urlMappingRepository.SaveUrlMapping(ctx, coreDomain.UrlMapping{
-		ShortUrlId: shortUrlId,
-		LongUrl:    shortenUrlRequest.LongUrl,
-		UserId:     "user", // TODO: Complete with userId
-		Active:     true,
-	})
+	urlMapping.ShortUrlId = shortUrlId
+
+	err = u.urlMappingRepository.SaveUrlMapping(ctx, urlMapping)
 	if err != nil {
-		return res, err
+		return "", err
 	}
-	res.ShortUrl = buildShortUrl(shortUrlId)
-	return res, err
+	return buildShortUrl(shortUrlId), err
 }
 
 func buildShortUrl(urlId string) string {
-	return "http://localhost:80/" + urlId
+	return constants.BaseUrl + urlId
 }

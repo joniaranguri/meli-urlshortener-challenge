@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"context"
+	coreDomain "github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/repository"
-	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/url/domain"
 )
 
 type urlUseCase struct {
@@ -11,7 +11,7 @@ type urlUseCase struct {
 }
 
 type UrlUseCase interface {
-	ShortenUrl(ctx context.Context, shortenUrlRequest domain.ShortenUrlRequest) (res domain.ShortenUrlResponse, err error)
+	ShortenUrl(ctx context.Context, urlMapping coreDomain.UrlMapping) (string, error)
 	GetLongUrl(ctx context.Context, shortUrlId string) (string, error)
 }
 
