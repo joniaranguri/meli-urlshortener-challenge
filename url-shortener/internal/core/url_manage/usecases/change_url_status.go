@@ -9,7 +9,7 @@ import (
 func (u *urlManageUseCase) ChangeUrlStatus(ctx context.Context, urlStatusInfo domain.UrlStatusInfo) error {
 	updatedUrlMapping := coreDomain.UrlMapping{
 		ShortUrlId: urlStatusInfo.ShortUrlId,
-		Enabled:    urlStatusInfo.Enabled,
+		Active:     urlStatusInfo.Active,
 	}
 	return u.UrlMappingRepository.SaveUrlMapping(ctx, updatedUrlMapping)
 }

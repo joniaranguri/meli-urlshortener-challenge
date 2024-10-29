@@ -10,12 +10,3 @@ func (r *registry) NewUrlMappingRepository() repository.UrlMappingRepository {
 	}
 	return repository.NewUrlMappingRepository(client)
 }
-
-func (r *registry) NewUrlIdsRepository() repository.UrlIdsRepository {
-	client, err := r.NewUrlIdsDatabaseClient()
-
-	if err != nil {
-		panic(err)
-	}
-	return repository.NewUrlIdsRepository(client)
-}

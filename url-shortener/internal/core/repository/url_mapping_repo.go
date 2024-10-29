@@ -2,31 +2,71 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"fmt"
+
 	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/domain"
+	"gorm.io/gorm"
 )
 
 type urlMappingRepository struct {
-	db any // TODO: Complete with corresponding database
+	db *gorm.DB
 }
 
 type UrlMappingRepository interface {
 	GetLongUrl(ctx context.Context, shortUrl string) (string, error)
 	SaveUrlMapping(ctx context.Context, urlMapping domain.UrlMapping) error
+	GetNewUniqueId(ctx context.Context) (string, error)
 }
 
 // GetLongUrl implements repository.UrlMappingRepository
 func (ur *urlMappingRepository) GetLongUrl(ctx context.Context, shortUrl string) (string, error) {
-	// TODO: Complete with corresponding implementation
-	return "https://articulo.mercadolibre.com.ar/MLA-1122519559-bicicleta-mtb-overtech-r29-acero-21v-freno-a-disco-pc-_JM#polycard_client=offers&deal_print_id=592cfeb6-8c12-4fb8-b7ea-e7b614346b80", nil
+	var urlMapping domain.UrlMapping
+	if err := ur.db.WithContext(ctx).Where("short_url = ?", shortUrl).First(&urlMapping).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return "", fmt.Errorf("short URL not found")
+		}
+		return "", err
+	}
+	return urlMapping.LongUrl, nil
 }
 
 // SaveUrlMapping implements repository.UrlMappingRepository
 func (ur *urlMappingRepository) SaveUrlMapping(ctx context.Context, urlMapping domain.UrlMapping) error {
-	// TODO: Complete with corresponding implementation
-	return nil
+	return ur.db.WithContext(ctx).
+		Model(&urlMapping).
+		Updates(urlMapping).Error
 }
 
-func NewUrlMappingRepository(db any) UrlMappingRepository {
+// GetNewUniqueId implements repository.UrlMappingRepository
+func (ur *urlMappingRepository) GetNewUniqueId(ctx context.Context) (string, error) {
+	var urlMapping domain.UrlMapping
+
+	tx := ur.db.WithContext(ctx)
+	err := tx.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&urlMapping).Select("short_url").Where("long_url IS NULL").First(&urlMapping.ShortUrlId).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.New("no available unique ID found")
+			}
+			return err
+		}
+		urlMapping.LongUrl = "Assigned"
+		if err := tx.Model(&urlMapping).Updates(map[string]interface{}{
+			"long_url": "Assigned",
+		}).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+	return urlMapping.ShortUrlId, nil
+}
+
+// NewUrlMappingRepository initializes a new UrlMappingRepository
+func NewUrlMappingRepository(db *gorm.DB) UrlMappingRepository {
 	return &urlMappingRepository{
 		db: db,
 	}

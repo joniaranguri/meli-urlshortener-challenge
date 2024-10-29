@@ -10,5 +10,5 @@ func (r *registry) NewUrlHandler() url.Handler {
 }
 
 func (r *registry) NewUrlUseCase() usecases.UrlUseCase {
-	return usecases.NewUrlUseCase(r.NewUrlMappingRepository(), r.NewUrlIdsRepository())
+	return usecases.NewUrlUseCase(r.NewUrlMappingRepository())
 }

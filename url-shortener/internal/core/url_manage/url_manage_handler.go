@@ -28,13 +28,13 @@ func (handler *urlManageHandler) UpdateUrl(ctx context.Context, request domain.P
 func (handler *urlManageHandler) EnableUrl(ctx context.Context, shortUrlId string) error {
 	return handler.userCases.ChangeUrlStatus(ctx, coreDomain.UrlStatusInfo{
 		ShortUrlId: shortUrlId,
-		Enabled:    true,
+		Active:     true,
 	})
 }
 
 func (handler *urlManageHandler) DisableUrl(ctx context.Context, shortUrlId string) error {
 	return handler.userCases.ChangeUrlStatus(ctx, coreDomain.UrlStatusInfo{
 		ShortUrlId: shortUrlId,
-		Enabled:    false,
+		Active:     false,
 	})
 }

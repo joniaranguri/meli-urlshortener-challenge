@@ -1,0 +1,8 @@
+database:
+  dbUser: "admin"
+  dbPass: "meli-urlshortener"
+  dbHost: "url-mapping-db.c7ukk2ia2ipe.us-east-1.rds.amazonaws.com"
+  dbPort: "3306"
+  dbName: "url_mapping_db"
+
+awsRegion: "us-east-1"
