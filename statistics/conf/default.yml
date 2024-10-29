@@ -1,2 +1,2 @@
 
-redisStatisticsMockHost: "redis-stats-mock:6380"
+redisStatisticsMockHost: "redis-stats-mock:6379"
