@@ -10,6 +10,7 @@ func (u *urlManageUseCase) UpdateUrl(ctx context.Context, request domain.PatchUr
 	updatedUrlMapping := coreDomain.UrlMapping{
 		ShortUrlId: request.ShortUrlId,
 		LongUrl:    request.LongUrl,
+		// TODO: Use shortUrlId
 	}
 	err = u.UrlMappingRepository.SaveUrlMapping(ctx, updatedUrlMapping)
 	if err != nil {
