@@ -11,16 +11,11 @@ type statisticsHandler struct {
 }
 
 type Handler interface {
-	PostTrackClick(ctx context.Context, shortUrlId string) error
 	GetClickStatistics(ctx context.Context, shortUrlId string) (domain.StatisticsResponse, error)
 }
 
 func NewStatisticsHandler(us usecases.StatisticsUseCase) Handler {
 	return &statisticsHandler{us}
-}
-
-func (handler *statisticsHandler) PostTrackClick(ctx context.Context, shortUrlId string) error {
-	return handler.userCases.AddClickCountStatistic(ctx, shortUrlId)
 }
 
 func (handler *statisticsHandler) GetClickStatistics(ctx context.Context, shortUrlId string) (res domain.StatisticsResponse, err error) {

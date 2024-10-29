@@ -11,7 +11,6 @@ type statisticsUseCase struct {
 }
 
 type StatisticsUseCase interface {
-	AddClickCountStatistic(ctx context.Context, shortUrlId string) error
 	GetClickStatistics(ctx context.Context, shortUrlId string) (domain.ClickStatistics, error)
 }
 
