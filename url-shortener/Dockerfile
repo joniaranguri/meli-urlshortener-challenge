@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Stage 1: Build the Go application
 FROM golang:1.18-alpine AS builder
 
@@ -16,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Specify the path to the main application file in the cmd directory
-RUN go build -o urlshortener ./cmd/urlshortener
+RUN go build -o urlshortener ./cmd/main.go
 
 # Stage 2: Run the application in a minimal container
 FROM alpine:latest
@@ -27,8 +25,11 @@ WORKDIR /root/
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/urlshortener .
 
+# Copy config folder
+COPY ./conf /root/conf
+
 # Expose the port the application will listen on (change if needed)
-EXPOSE 8080
+EXPOSE 80
 
 # Command to run the application
 CMD ["./urlshortener"]
