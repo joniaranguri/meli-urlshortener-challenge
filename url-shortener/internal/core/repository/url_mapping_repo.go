@@ -61,7 +61,7 @@ func (ur *urlMappingRepository) SaveUrlMapping(ctx context.Context, urlMapping d
 	var existingMapping domain.UrlMapping
 
 	// Check if the URL mapping already exists
-	if err := ur.db.WithContext(ctx).First(&existingMapping, "short_url_id = ?", urlMapping.ShortUrlId).Error; err != nil {
+	if err := ur.db.WithContext(ctx).First(&existingMapping, "short_url = ?", urlMapping.ShortUrlId).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("error checking existing URL mapping: %v", err)
 		}
@@ -90,7 +90,7 @@ func (ur *urlMappingRepository) GetNewUniqueId(ctx context.Context) (string, err
 	// Use a transaction to ensure atomicity
 	err := ur.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// Try to retrieve an available unique ID
-		if err := tx.Model(&urlMapping).Where("long_url IS NULL").Select("short_url_id").First(&urlMapping).Error; err != nil {
+		if err := tx.Model(&urlMapping).Where("long_url IS NULL").Select("short_url").First(&urlMapping).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("no available unique ID found")
 			}
