@@ -13,7 +13,7 @@ type UrlManageController struct {
 }
 
 func (controller *UrlManageController) RegisterRoutes(router gin.IRouter) {
-	router.PATCH("/:shortUrlId ", controller.PatchUrl)
+	router.PATCH("/:shortUrlId", controller.PatchUrl)
 	router.POST("/:shortUrlId/enable", controller.PostEnable)
 	router.POST("/:shortUrlId/disable", controller.PostDisable)
 }
