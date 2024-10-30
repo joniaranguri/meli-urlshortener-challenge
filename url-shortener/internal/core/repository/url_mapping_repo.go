@@ -21,6 +21,8 @@ type urlMappingRepository struct {
 type UrlMappingRepository interface {
 	GetLongUrl(ctx context.Context, shortUrl string) (string, error)
 	SaveUrlMapping(ctx context.Context, urlMapping domain.UrlMapping) error
+	UpdateLongUrl(ctx context.Context, urlMapping domain.UrlMapping) error
+	UpdateStatus(ctx context.Context, urlMapping domain.UrlMapping) error
 	GetNewUniqueId(ctx context.Context) (string, error)
 	SaveClickCountMetrics(ctx context.Context, shortUrlId string) error
 }
@@ -56,8 +58,30 @@ func (ur *urlMappingRepository) GetLongUrl(ctx context.Context, shortUrl string)
 	return urlMapping.LongUrl, nil
 }
 
+// UpdateLongUrl updates the long url in the database and updates the cache.
+func (ur *urlMappingRepository) UpdateLongUrl(ctx context.Context, urlMapping domain.UrlMapping) error {
+	return ur.updateMappingProperty(ctx, urlMapping, "long_url", urlMapping.LongUrl)
+}
+
+// UpdateStatus updates the url status in the database and updates the cache.
+func (ur *urlMappingRepository) UpdateStatus(ctx context.Context, urlMapping domain.UrlMapping) error {
+	return ur.updateMappingProperty(ctx, urlMapping, "active", urlMapping.Active)
+}
+
 // SaveUrlMapping saves the URL mapping to the database and updates the cache.
 func (ur *urlMappingRepository) SaveUrlMapping(ctx context.Context, urlMapping domain.UrlMapping) error {
+	if err := ur.db.WithContext(ctx).Save(&urlMapping).Error; err != nil {
+		return fmt.Errorf("error saving URL mapping: %v", err)
+	}
+	// Update the cache with the new mapping
+	if err := ur.sendMappingToCache(ctx, urlMapping); err != nil {
+		log.Printf("Error updating cache after saving: %v", err)
+	}
+	return nil
+}
+
+// updateMappingProperty updates a single property of url mapping the database and updates the cache.
+func (ur *urlMappingRepository) updateMappingProperty(ctx context.Context, urlMapping domain.UrlMapping, propertyName string, propertyValue any) error {
 	var existingMapping domain.UrlMapping
 
 	// Check if the URL mapping already exists
@@ -72,8 +96,8 @@ func (ur *urlMappingRepository) SaveUrlMapping(ctx context.Context, urlMapping d
 		}
 	}
 
-	if err := ur.db.WithContext(ctx).Save(&urlMapping).Error; err != nil {
-		return fmt.Errorf("error saving URL mapping: %v", err)
+	if err := ur.db.WithContext(ctx).Model(&urlMapping).Update(propertyName, propertyValue).Error; err != nil {
+		return fmt.Errorf("error updating URL mapping: %v", err)
 	}
 
 	// Update the cache with the new mapping
@@ -98,7 +122,6 @@ func (ur *urlMappingRepository) GetNewUniqueId(ctx context.Context) (string, err
 		}
 
 		// Mark it as used
-		urlMapping.LongUrl = "Assigned"
 		if err := tx.Model(&urlMapping).Update("long_url", "Assigned").Error; err != nil {
 			return fmt.Errorf("error updating long URL: %v", err)
 		}

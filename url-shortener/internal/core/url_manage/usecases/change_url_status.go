@@ -7,9 +7,5 @@ import (
 
 // ChangeUrlStatus enables or disables a URL  in the repository.
 func (u *urlManageUseCase) ChangeUrlStatus(ctx context.Context, updatedUrlMapping domain.UrlMapping) error {
-	if err := u.UrlMappingRepository.SaveUrlMapping(ctx, updatedUrlMapping); err != nil {
-		return err
-	}
-
-	return nil
+	return u.UrlMappingRepository.UpdateStatus(ctx, updatedUrlMapping)
 }
