@@ -1,6 +1,9 @@
 package registry
 
-import "github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/repository"
+import (
+	"github.com/joniaranguri/meli-urlshortener-challenge/url-shortener/internal/core/repository"
+	"os"
+)
 
 func (r *registry) NewUrlMappingRepository() repository.UrlMappingRepository {
 	dbClient, err := r.NewUrlMappingDatabaseClient()
@@ -10,13 +13,15 @@ func (r *registry) NewUrlMappingRepository() repository.UrlMappingRepository {
 	}
 	cacheClient, err := r.NewUrlMappingCacheClient()
 
-	if err != nil {
+	scope := os.Getenv("SCOPE")
+
+	if err != nil && scope == "DEMO" {
 		panic(err)
 	}
 
 	statisticsDbClient, err := r.NewStatisticsDbClient()
 
-	if err != nil {
+	if err != nil && scope == "DEMO" {
 		panic(err)
 	}
 	return repository.NewUrlMappingRepository(dbClient, cacheClient, statisticsDbClient)

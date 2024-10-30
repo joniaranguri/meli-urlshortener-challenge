@@ -16,7 +16,7 @@ func (u *urlManageUseCase) UpdateUrl(ctx context.Context, urlMapping coreDomain.
 		return "", errors.New("long URL cannot be empty")
 	}
 
-	if err := u.UrlMappingRepository.SaveUrlMapping(ctx, urlMapping); err != nil {
+	if err := u.UrlMappingRepository.UpdateLongUrl(ctx, urlMapping); err != nil {
 		log.Printf("Error updating URL mapping: %v", err)
 		return "", err
 	}
