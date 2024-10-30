@@ -100,8 +100,25 @@ func (ur *urlMappingRepository) updateMappingProperty(ctx context.Context, urlMa
 		return fmt.Errorf("error updating URL mapping: %v", err)
 	}
 
+	switch propertyName {
+	case "active":
+		if activeValue, ok := propertyValue.(bool); ok {
+			existingMapping.Active = activeValue
+		} else {
+			return fmt.Errorf("propertyValue for 'active' must be of type bool")
+		}
+	case "long_url":
+		if longURLValue, ok := propertyValue.(string); ok {
+			existingMapping.LongUrl = longURLValue
+		} else {
+			return fmt.Errorf("propertyValue for 'long_url' must be of type string")
+		}
+	default:
+		return fmt.Errorf("unsupported property name: %s", propertyName)
+	}
+
 	// Update the cache with the new mapping
-	if err := ur.sendMappingToCache(ctx, urlMapping); err != nil {
+	if err := ur.sendMappingToCache(ctx, existingMapping); err != nil {
 		log.Printf("Error updating cache after saving: %v", err)
 	}
 	return nil
